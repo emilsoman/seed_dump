@@ -56,4 +56,28 @@ module Helpers
       end
     end
   end
+
+  def create_db_with_sane_data
+    ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
+
+    ActiveRecord::Migration.verbose = false
+
+    ActiveRecord::Schema.define(:version => 1) do
+      create_table 'students', :force => true do |t|
+        t.string   'name'
+        t.integer   'roll_number'
+        t.boolean   'genius'
+        t.datetime 'created_at', :null => false
+        t.datetime 'updated_at', :null => false
+      end
+    end
+
+    Object.const_set('Student', Class.new(ActiveRecord::Base))
+
+    Student.create!([
+      {:name => 'User1', :roll_number => 10, :genius => false},
+      {:name => 'User1', :roll_number => 10, :genius => false},
+      {:name => 'Emil', :roll_number => 15, :genius => true}
+    ])
+  end
 end

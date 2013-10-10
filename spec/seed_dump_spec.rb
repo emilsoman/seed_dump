@@ -1,6 +1,27 @@
 require 'spec_helper'
 
 describe SeedDump do
+  describe "#dump_models for csv" do
+    it 'should dump as CSV if CSV parameter is true' do
+      create_db_with_sane_data
+      @sd = SeedDump.new
+      @env = {'FILE' => Dir.pwd + '/spec/db/seeds.rb',
+              'VERBOSE' => false,
+              'CSV' => true,
+              'TIMESTAMPS' => false,
+              'DEBUG' => false}
+
+      @sd.setup @env
+
+      @sd.dump_models.should eq("
+Student
+name,roll_number,genius
+User1,10,false
+User1,10,false
+Emil,15,true
+\n\n")
+    end
+  end
   describe '#dump_models' do
     before(:all) do
       create_db
